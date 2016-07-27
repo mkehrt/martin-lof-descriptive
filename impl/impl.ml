@@ -3,25 +3,37 @@ module SecondOrderExistentialPrenex = struct
   module Variables = struct
     type ty
     type exp
+    
+    type 'a t = Var of string
   end
-  type 'a var = Var of string
 
-  type kind = KindTy | KindArrow of kind * kind
+  module Kind = struct
+    type t = Type | Arrow of t * t
+  end
 
-  type secondOrderExistentialType =
-    SecondOrderExistential of Variables.ty var * kind * secondOrderExistentialType
-  | FirstOrder of firstOrder
+  module SecondOrderPath = struct
+    type t =
+      Head of Variables.ty Variables.t
+    | Cons of t * Variables.exp Variables.t
+  end
 
-  type secondOrderPath =
-    Head of Variables.ty var
-  | Cons of secondOrderPath * Variables.exp var
+  module FirstOrderType = struct
+  type t =  
+      Path2 of SecondOrderPath.t
+    | FirstOrderExistential of Variables.exp * t * t
+    | FirstOrderUniversal of Variables.exp * t * t
+    | And of t * t
+    | Or of t * t
+    | Implies of t * t
+  end
 
-  type firstOrderType
-    Path2 of secondOrderPath
-  | FirstOrderExistential of Variables.exp * firstOrderType * firstOrderType
-  | FirstOrderUniversal of Variables.exp * firstOrderType * firstOrderType
-  | And of firstOrderType * firstOrderType
-  | Or of firstOrderType * firstOrderType
-  | Implies of firstOrderType * firstOrderType
+  module SecondOrderExistentialType = struct
+    type t =
+      SecondOrderExistential of
+        Variables.ty Variables.t *
+        Kind.t *
+        t
+    | FirstOrder of FirstOrderType.t
+  end
 
 end
