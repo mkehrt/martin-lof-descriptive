@@ -12,11 +12,12 @@ module SecondOrderExistentialPrenex = struct
     SecondOrderExistential of Variables.ty var * kind * secondOrderExistentialType
   | FirstOrder of firstOrder
 
-  type secondOrderPath = Head of 
+  type secondOrderPath =
+    Head of Variables.ty var
+  | Cons of secondOrderPath * Variables.exp var
 
   type firstOrderType
     Path2 of secondOrderPath
-  | Var1 of Variables.exp Variables
   | FirstOrderExistential of Variables.exp * firstOrderType * firstOrderType
   | FirstOrderUniversal of Variables.exp * firstOrderType * firstOrderType
   | And of firstOrderType * firstOrderType
