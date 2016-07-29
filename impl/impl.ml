@@ -1,27 +1,44 @@
 module SecondOrderExistentialPrenex = struct
 
+  (* e.g. Exists X: type. Exists P: X -> type. exists x: X. P(x) *)
+  (* ???? (forbidden as is)
+
+    Exists X: type.
+    Exists: R: X -> type.
+    Exists P: R(x) -> type.
+    exists x: X.
+      P(x)
+      
+   *)
+
   module Variables = struct
-    type ty
     type exp
+    type ty
     
     type 'a t = Var of string
   end
 
-  module Kind = struct
-    type t = Type | Arrow of t * t
+  module PredicateType = struct
+    type t =
+      Pred of Variables.ty Variables.t
+    | App of t * Variables.exp
   end
 
-  module SecondOrderPath = struct
+  module PredicateKind = struct
     type t =
-      Head of Variables.ty Variables.t
-    | Cons of t * Variables.exp Variables.t
+      Type
+    | Arrow of Variables.ty * t
+  end
+
+  module PredicateExpression = struct
+    type t = Var of Variables.exp Variables.t
   end
 
   module FirstOrderType = struct
   type t =  
-      Path2 of SecondOrderPath.t
-    | FirstOrderExistential of Variables.exp * t * t
-    | FirstOrderUniversal of Variables.exp * t * t
+      Predicate of PredicateType.t
+    | FirstOrderExistential of Variables.exp * Variables.ty * t
+    | FirstOrderUniversal of Variables.exp * Variables.ty * t
     | And of t * t
     | Or of t * t
     | Implies of t * t
@@ -31,7 +48,7 @@ module SecondOrderExistentialPrenex = struct
     type t =
       SecondOrderExistential of
         Variables.ty Variables.t *
-        Kind.t *
+        PredicateKind.t *
         t
     | FirstOrder of FirstOrderType.t
   end
