@@ -3,10 +3,8 @@ module SecondOrderExistentialPrenex = struct
   (* e.g. Exists X: type. Exists P: X -> type. exists x: X. P(x) *)
   (* ???? (forbidden as is)
 
-    Exists X: type.
     Exists: R: X -> type.
     Exists P: R(x) -> type.
-    exists x: X.
       P(x)
       
    *)
@@ -37,8 +35,8 @@ module SecondOrderExistentialPrenex = struct
   module FirstOrderType = struct
   type t =  
       Predicate of PredicateType.t
-    | FirstOrderExistential of Variables.exp * Variables.ty * t
-    | FirstOrderUniversal of Variables.exp * Variables.ty * t
+    | FirstOrderExistential of Variables.exp * PredicateType.t * t
+    | FirstOrderUniversal of Variables.exp * PredicateType.t * t
     | And of t * t
     | Or of t * t
     | Implies of t * t
@@ -52,5 +50,12 @@ module SecondOrderExistentialPrenex = struct
         t
     | FirstOrder of FirstOrderType.t
   end
+
+  module FirstOrderExpression = struct
+    type t = 
+      ...
+    | FirstOrderExistentialPair of t * type
+    | ...
+    | FirstOrderUniversalLambda of 
 
 end
