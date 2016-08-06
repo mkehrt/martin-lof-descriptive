@@ -1,14 +1,7 @@
 module SecondOrderExistentialPrenex = struct
 
-  (* e.g. Exists X: type. Exists P: X -> type. exists x: X. P(x) *)
-  (* ???? (forbidden as is)
-
-    Exists: R: X -> type.
-    Exists P: R(x) -> type.
-      P(x)
-      
-   *)
-
+  (* e.g. Exists X: type. Exists P: X -> type. exists x: X. P(x) /\ True *)
+  (* [X: type; x: X, y: X, z: X], [P: X -> type; p: P(x), q: P(y)], x, (p, T) *)
   module Variables = struct
     type exp
     type ty
@@ -40,6 +33,7 @@ module SecondOrderExistentialPrenex = struct
     | And of t * t
     | Or of t * t
     | Implies of t * t
+    | True
   end
 
   module SecondOrderExistentialType = struct
@@ -53,9 +47,28 @@ module SecondOrderExistentialPrenex = struct
 
   module FirstOrderExpression = struct
     type t = 
-      ...
-    | FirstOrderExistentialPair of t * type
-    | ...
-    | FirstOrderUniversalLambda of 
+      PredicateConstructor of Variables.exp 
+    | FirstOrderExistentialPair of t * t
+    | FirstOrderExistentialLet of t * Variables.exp * t
+    | FirstOrderUniversalLambda of Variables.exp * FirstOrderType.t * t
+    | FirstOrderUniversalApplication of t * t
+    | Pair of t * t
+    | ProjLeft of t
+    | ProjRight of t
+    | InjLeft of t * FirstOrderType.t
+    | InjRight of FirstOrderType.t * t
+    | Case of t * Variables.exp * t * Variables.exp * t
+    | Lambda of Variables.exp * FirstOrderType.t * t
+    | Application of t * t
+    | T
+  end
+
+  let typecheck delta gamma e =
+    match e with
+    (*  PredicateConstructor x = lookupCtor x
+    | FirstOrderExistentialPair t e => *)
+
+     _ -> FirstOrderType.True
+  
 
 end
