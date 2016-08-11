@@ -63,7 +63,7 @@ module SecondOrderExistentialPrenex = struct
     | T
   end
 
-  let typecheck delta gamma e =
+  let typecheck pCtx tCtx eCtx e =
     match e with
     (*  PredicateConstructor x = lookupCtor x
     | FirstOrderExistentialPair t e => *)
