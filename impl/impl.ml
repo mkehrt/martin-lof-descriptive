@@ -80,7 +80,7 @@ module SecondOrderExistentialPrenex = struct
   let typecheck pCtx tCtx eCtx e =
     match e with
       FirstOrderExpression.Predicate pe -> typecheckPredicate pCtx pe
-    | FirstOrderExpression.ExistentialPair (t, e) -> raise 
+    | FirstOrderExpression.ExistentialPair (t, e) -> raise Unimp
     | _ -> raise Unimp  
 
 end
