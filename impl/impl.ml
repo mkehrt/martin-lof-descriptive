@@ -1,3 +1,6 @@
+
+exception Unimp
+
 module SecondOrderExistentialPrenex = struct
 
   (* e.g. Exists X: type. Exists P: X -> type. exists x: X. P(x) /\ True *)
@@ -47,11 +50,11 @@ module SecondOrderExistentialPrenex = struct
 
   module FirstOrderExpression = struct
     type t = 
-      PredicateConstructor of Variables.exp 
-    | FirstOrderExistentialPair of t * t
-    | FirstOrderExistentialLet of t * Variables.exp * t
-    | FirstOrderUniversalLambda of Variables.exp * FirstOrderType.t * t
-    | FirstOrderUniversalApplication of t * t
+      Predicate of PredicateExpression.t 
+    | ExistentialPair of Variables.exp * t
+    | ExistentialLet of t * Variables.exp * t
+    | UniversalLambda of Variables.exp * FirstOrderType.t * t
+    | UniversalApplication of t * t
     | Pair of t * t
     | ProjLeft of t
     | ProjRight of t
@@ -63,12 +66,21 @@ module SecondOrderExistentialPrenex = struct
     | T
   end
 
+  exception Tc
+
+  let rec lookup ctx x = 
+    match ctx with 
+      [] -> raise Tc
+    | (y,t)::tl -> if y = x then t else lookup tl x
+
+  let typecheckPredicate pCtx pe = 
+    match pe with
+      PredicateExpression.Var pe -> lookup pCtx pe
+
   let typecheck pCtx tCtx eCtx e =
     match e with
-    (*  PredicateConstructor x = lookupCtor x
-    | FirstOrderExistentialPair t e => *)
-
-     _ -> FirstOrderType.True
-  
+      FirstOrderExpression.Predicate pe -> typecheckPredicate pCtx pe
+    | FirstOrderExpression.ExistentialPair (t, e) -> raise 
+    | _ -> raise Unimp  
 
 end
