@@ -8,9 +8,15 @@ module SecondOrderExistentialPrenex = struct
   module Variables = struct
     type exp
     type ty
-    
     type 'a t = Var of string
   end
+
+  module PredicateContext = struct
+    type t =
+      Ary of (pTycon * PredicateKind.t * (pExpcon * pExpcon list) list)  * t
+      
+  end
+ 
 
   module PredicateType = struct
     type t =
@@ -51,6 +57,7 @@ module SecondOrderExistentialPrenex = struct
   module FirstOrderExpression = struct
     type t = 
       Predicate of PredicateExpression.t 
+    | PredicateCase of (Variables.exp * t) list
     | ExistentialPair of Variables.exp * t
     | ExistentialLet of t * Variables.exp * t
     | UniversalLambda of Variables.exp * FirstOrderType.t * t
@@ -80,7 +87,8 @@ module SecondOrderExistentialPrenex = struct
   let typecheck pCtx tCtx eCtx e =
     match e with
       FirstOrderExpression.Predicate pe -> typecheckPredicate pCtx pe
-    | FirstOrderExpression.ExistentialPair (t, e) -> raise Unimp
+    | FirstOrderExpression.PredicateCase pe -> typecheckPredicate pCtx pe
+    (* everything else is standard *)
     | _ -> raise Unimp  
 
 end
